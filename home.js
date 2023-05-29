@@ -14,20 +14,31 @@ const stack = `
  1   2   3 
 `;
 
+//  Comon section //
+
 let lines = stacks.split("\n").slice(1, -2);
 let movements = moves.split("\n").slice(1, -1);
+const linesArray = changeToArray();
+// console.log(linesArray);
+const initialStacksArray = revertLinesArray(linesArray);
+// console.log(initialStacksArray);
+const moveArray = extractNumbers(movements);
+// console.log(moveArray);
 
-partOne();
+// Main section//
+// partOne();
+partTwo();
 
+// Functions section //
 function partOne() {
-  const linesArray = changeToArray();
-  // console.log(linesArray);
-  const initialStacksArray = revertLinesArray(linesArray);
-  // console.log(initialStacksArray);
-  const moveArray = extractNumbers(movements);
-  // console.log(moveArray);
   const newStacksArray = doMovements(initialStacksArray, moveArray);
   // console.log("new stacks are: " + newStacksArray);
+  const topStacks = findTops(newStacksArray);
+  console.log("top stacks are: " + topStacks);
+}
+
+function partTwo() {
+  const newStacksArray = doMovements2(initialStacksArray, moveArray);
   const topStacks = findTops(newStacksArray);
   console.log("top stacks are: " + topStacks);
 }
@@ -84,6 +95,21 @@ function doMovements(initialStacksArray, moveArray) {
       newStacks[target - 1].unshift(item);
       newStacks[source - 1].shift(item);
     }
+  });
+  return newStacks;
+}
+
+function doMovements2(initialStacksArray, moveArray) {
+  let newStacks = initialStacksArray;
+  moveArray.forEach((move) => {
+    const [moveNumber, source, target] = move;
+    let sourceStack = newStacks[source - 1];
+    let items = sourceStack.slice(0, moveNumber);
+
+    for (let i = items.length - 1; i >= 0; i--) {
+      newStacks[target - 1].unshift(items[i]);
+    }
+    newStacks[source - 1].splice(0, moveNumber);
   });
   return newStacks;
 }
